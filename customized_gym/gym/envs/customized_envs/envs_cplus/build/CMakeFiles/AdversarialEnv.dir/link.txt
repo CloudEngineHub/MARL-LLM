@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -g -Wall -std=c++11 -O3 -Wno-unused-variable -Wno-reorder -Wno-sign-compare -Wno-missing-braces -fopenmp -pthread -DDEBUG  -shared -Wl,-soname,libAdversarialEnv.so -o libAdversarialEnv.so CMakeFiles/AdversarialEnv.dir/src/AdversarialEnv.cpp.o 

@@ -1,0 +1,182 @@
+from torch import Tensor, nn
+import torch
+from torch.autograd import Variable
+from torch.optim import Adam
+from .networks import MLPNetwork, MLPNetworkRew       
+from .misc import hard_update, gumbel_softmax, onehot_from_logits
+from .noise import OUNoise, GaussianNoise
+import numpy as np
+
+class DDPGAgent(object):
+    """
+    General class for DDPG agents (policy, critic, target policy, target
+    critic, exploration noise)
+    """
+    def __init__(self, dim_input_policy, dim_output_policy, dim_input_critic, topo_nei_max, is_con_self, is_con_remark_leader,
+                 lr_actor, lr_critic, hidden_dim=64, discrete_action=False, device='cpu', epsilon=0.1, noise=0.1):
+        """
+        Inputs:
+            dim_input_policy (int): number of dimensions for policy input
+            dim_output_policy (int): number of dimensions for policy output
+            dim_input_critic (int): number of dimensions for critic input
+        """
+        self.policy = MLPNetwork(dim_input_policy, dim_output_policy, 
+                                 hidden_dim=hidden_dim, 
+                                 constrain_out=True,
+                                 discrete_action=discrete_action)
+        self.target_policy = MLPNetwork(dim_input_policy, dim_output_policy,
+                                        hidden_dim=hidden_dim,
+                                        constrain_out=True,
+                                        discrete_action=discrete_action)
+        
+        # self.policy = MultiHeadMLPNetwork(input_dim_1=dim_input_policy-160, input_dim_2=160, out_dim=dim_output_policy, 
+        #                          hidden_dim_1=hidden_dim, hidden_dim_2=128, 
+        #                          constrain_out=True,
+        #                          discrete_action=discrete_action)
+        # self.target_policy = MultiHeadMLPNetwork(input_dim_1=dim_input_policy-160, input_dim_2=160, out_dim=dim_output_policy, 
+        #                          hidden_dim_1=hidden_dim, hidden_dim_2=128, 
+        #                          constrain_out=True,
+        #                          discrete_action=discrete_action)
+        
+        # self.policy = SymmetricNetwork(dim_input_policy, dim_output_policy,
+        #                          hidden_dim=hidden_dim, 
+        #                          constrain_out=True,
+        #                          discrete_action=discrete_action)
+        # self.target_policy = SymmetricNetwork(dim_input_policy, dim_output_policy,
+        #                                 hidden_dim=hidden_dim,
+        #                                 constrain_out=True,
+        #                                 discrete_action=discrete_action)
+        
+        self.critic = MLPNetwork(dim_input_critic, 1,
+                                 hidden_dim=hidden_dim,
+                                 constrain_out=False)
+        self.target_critic = MLPNetwork(dim_input_critic, 1,
+                                        hidden_dim=hidden_dim,
+                                        constrain_out=False)
+        
+        ####################################### added #######################################
+        self.reward_rs = MLPNetworkRew(dim_input_critic, 1, hidden_dim, constrain_out=True)
+        self.target_reward_rs = MLPNetworkRew(dim_input_critic, 1, hidden_dim, constrain_out=True)
+        self.reward_rs_critic = MLPNetworkRew(dim_input_critic + 1, 1, hidden_dim, constrain_out=False)
+        self.target_reward_rs_critic = MLPNetworkRew(dim_input_critic + 1, 1, hidden_dim, constrain_out=False)
+        # self.reward_rs = MLPNetworkRew(dim_input_policy, 1, hidden_dim, constrain_out=True)
+        # self.target_reward_rs = MLPNetworkRew(dim_input_policy, 1, hidden_dim, constrain_out=True)
+        # self.reward_rs_critic = MLPNetworkRew(dim_input_policy + 1, 1, hidden_dim, constrain_out=False)
+        # self.target_reward_rs_critic = MLPNetworkRew(dim_input_policy + 1, 1, hidden_dim, constrain_out=False)
+        ####################################### added #######################################
+        
+        # print("target_policy_parameter", list(self.target_policy.parameters()), "policy_parameter", list(self.policy.parameters()))
+        hard_update(self.target_policy, self.policy)
+        # print("target_policy_parameter_after_update", list(self.target_policy.parameters()), "policy_parameter_after_update", list(self.policy.parameters()))
+        hard_update(self.target_critic, self.critic)
+        self.policy_optimizer = Adam(self.policy.parameters(), lr_actor)
+        self.critic_optimizer = Adam(self.critic.parameters(), lr_critic)
+
+        ####################################### added #######################################
+        hard_update(self.target_reward_rs, self.reward_rs)
+        hard_update(self.target_reward_rs_critic, self.reward_rs_critic)
+        self.reward_rs_optimizer = Adam(self.reward_rs.parameters(), lr_actor)
+        self.reward_rs_critic_optimizer = Adam(self.reward_rs_critic.parameters(), lr_critic)
+        ####################################### added #######################################
+
+        self.epsilon = epsilon
+        self.noise = noise
+        if not discrete_action:
+            # self.exploration = OUNoise(dim_output_policy)
+            self.exploration = GaussianNoise(dim_output_policy, noise)   
+        else:
+            self.exploration = 0.3  # epsilon for eps-greedy
+        self.discrete_action = discrete_action
+
+    def reset_noise(self):            
+        if not self.discrete_action:
+            self.exploration.reset()
+
+    def scale_noise(self, scale):
+        if self.discrete_action:
+            self.exploration = scale
+        else:
+            self.exploration.scale = scale
+
+    def step(self, obs, explore=False):
+        """
+        Take a step forward in environment for a minibatch of observations
+        Inputs:
+            obs (PyTorch Variable): Observations for this agent
+            explore (boolean): Whether or not to add exploration noise
+        Outputs:
+            action (PyTorch Variable): Actions for this agent
+        """
+        action = self.policy(obs)     
+        log_pi = torch.full((action.shape[0], 1), -action.shape[1] * np.log(1))
+        # print('original action:', action)          
+        if self.discrete_action: # discrete action
+            if explore:
+                action = gumbel_softmax(action, hard=True)
+            else:
+                action = onehot_from_logits(action)
+        else:  # continuous action
+            if explore:
+                if np.random.rand() < self.epsilon:
+                    action = Tensor(np.random.uniform(-1, 1, size=action.shape)).requires_grad_(False)
+                    log_pi = torch.full((action.shape[0], 1), -action.shape[1] * np.log(2))
+                else:
+                    action_noise = Tensor(self.exploration.noise(action.shape[0])).requires_grad_(False)
+                    log_pi =  Tensor(self.exploration.log_prob(action_noise)).unsqueeze(-1).requires_grad_(False)
+                    action += action_noise
+                    action = action.clamp(-1, 1)
+        
+        # print('agent_exploration_noise: %f agent_epsilon: %f' % (self.exploration.scale, self.epsilon))
+        # print('agent_exploration_noise: %f agent_epsilon: %f' % (np.mean(self.exploration.noise()), self.epsilon))
+        return action.t(), log_pi.t()
+        # return action.t()
+
+    def step_rew(self, obs):
+        """
+        Take a step forward in environment for a minibatch of observations
+        Inputs:
+            obs (PyTorch Variable): Observations for this agent
+        Outputs:
+            reward (PyTorch Variable): Intrisinc reward for this agent
+        """
+        reward = self.reward_rs(obs)   
+        # if np.random.rand() < 0.1:
+        #     reward = Tensor(np.random.uniform(-1, 1, size=reward.shape)).requires_grad_(False)
+        # else:
+        #     reward += Tensor(np.random.randn(reward.shape[0], 1) * 0.5).requires_grad_(False)
+        #     reward = reward.clamp(-1, 1)  
+        
+        # print('agent_exploration_noise: %f agent_epsilon: %f' % (self.exploration.scale, self.epsilon))
+        # print('agent_exploration_noise: %f agent_epsilon: %f' % (np.mean(self.exploration.noise()), self.epsilon))
+        return reward.t()                      
+
+    def get_params(self):
+        return {'policy': self.policy.state_dict(),
+                'critic': self.critic.state_dict(),
+                'target_policy': self.target_policy.state_dict(),
+                'target_critic': self.target_critic.state_dict(),
+                'policy_optimizer': self.policy_optimizer.state_dict(),
+                'critic_optimizer': self.critic_optimizer.state_dict(),
+
+                'reward_rs': self.reward_rs.state_dict(),
+                'reward_rs_critic': self.reward_rs_critic.state_dict(),
+                'target_reward_rs': self.target_reward_rs.state_dict(),
+                'target_reward_rs_critic': self.target_reward_rs_critic.state_dict(),
+                'reward_rs_optimizer': self.reward_rs_optimizer.state_dict(),
+                'reward_rs_critic_optimizer': self.reward_rs_critic_optimizer.state_dict()}
+                
+
+    def load_params(self, params):
+        self.policy.load_state_dict(params['policy'])
+        self.critic.load_state_dict(params['critic'])
+        self.target_policy.load_state_dict(params['target_policy'])
+        self.target_critic.load_state_dict(params['target_critic'])
+        self.policy_optimizer.load_state_dict(params['policy_optimizer'])
+        self.critic_optimizer.load_state_dict(params['critic_optimizer'])
+
+        self.reward_rs.load_state_dict(params['reward_rs'])
+        self.reward_rs_critic.load_state_dict(params['reward_rs_critic'])
+        self.target_reward_rs.load_state_dict(params['target_reward_rs'])
+        self.target_reward_rs_critic.load_state_dict(params['target_reward_rs_critic'])
+        self.reward_rs_optimizer.load_state_dict(params['reward_rs_optimizer'])
+        self.reward_rs_critic_optimizer.load_state_dict(params['reward_rs_critic_optimizer'])

@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/AdversarialEnv.cpp
+AdversarialEnv.h
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/AdversarialEnv.h
+iostream
+-
+tuple
+-
+algorithm
+-
+vector
+-
+cmath
+-
+numeric
+-
+typeinfo
+-
+
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/AdversarialEnv.h
+vector
+-
+cmath
+-
+

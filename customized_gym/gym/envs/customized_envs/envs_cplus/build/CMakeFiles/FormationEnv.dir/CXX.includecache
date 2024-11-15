@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/FormationEnv.cpp
+FormationEnv.h
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/FormationEnv.h
+iostream
+-
+tuple
+-
+algorithm
+-
+vector
+-
+cmath
+-
+numeric
+-
+typeinfo
+-
+random
+-
+
+/home/zhugb/Software/miniconda3/envs/env5/customized_gym/gym/envs/customized_envs/envs_cplus/src/FormationEnv.h
+vector
+-
+cmath
+-
+
