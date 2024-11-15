@@ -18,6 +18,7 @@ from .analyze_stage_prompt import (
     FUNCTION_TEMPLATE,
 )
 from .env_description import ENV_DES
+from .rl_critic_prompt import REWARD_STATEVALUE_CRITIC_PROMPT_TEMPLATE, CRITIC_TEMPLATE
 from .robot_api_prompt import (
     robot_api,
     GLOBAL_ROBOT_API,
@@ -45,6 +46,8 @@ __all__ = [
     "CONSTRAIN_TEMPLATE",
     "FUNCTION_TEMPLATE",
     "ENV_DES",
+    "REWARD_STATEVALUE_CRITIC_PROMPT_TEMPLATE",
+    "CRITIC_TEMPLATE",
     "robot_api",
     "GLOBAL_ROBOT_API",
     "LOCAL_ROBOT_API",

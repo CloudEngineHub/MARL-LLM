@@ -85,15 +85,15 @@ class ActionNode(BaseNode):
     def _build_prompt(self):
         pass
 
-    async def run(self, auto_next: bool = True) -> str:
+    async def run(self, obs_input, auto_next: bool = True) -> str:
         # First create a prompt, then utilize it to query the language model.
         self.prompt = Prompt().get_prompt(
             action=self.__class__.__name__, scope=self.context.scoop
         )
-        self._build_prompt()
+        self._build_prompt(obs_input)
         logger.log(f"Action: {str(self)}", "info")
         res = await self._run()
-        self.context.save_to_file(file_path=root_manager.workspace_root / f"{self}.pkl")
+        # self.context.save_to_file(file_path=root_manager.workspace_root / f"{self}.pkl")
         if isinstance(res, CodeError):
             # If response is CodeError, handle it and move to next action
             #

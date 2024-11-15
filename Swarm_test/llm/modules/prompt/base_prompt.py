@@ -35,6 +35,11 @@ from modules.prompt.coding_stage_prompt import (
     GLOBAL_RUN_OUTPUT_TEMPLATE,
 )
 
+from modules.prompt.rl_critic_prompt import (
+    REWARD_STATEVALUE_CRITIC_PROMPT_TEMPLATE,
+    CRITIC_TEMPLATE,
+)
+
 
 class Prompt:
     def __init__(
@@ -59,12 +64,13 @@ class Prompt:
                 "global": WRITE_GLOBAL_RUN_PROMPT_TEMPLATE,
                 "local": WRITE_LOCAL_RUN_PROMPT_TEMPLATE,
             },
+            "RLCritic": REWARD_STATEVALUE_CRITIC_PROMPT_TEMPLATE
         }
 
     def get_prompt(self, action: str, scope: str) -> str:
         if action not in self.action_map:
             return ""
-        if action == "AnalyzeSkills" or action == "AnalyzeConstraints":
+        if action == "AnalyzeSkills" or action == "AnalyzeConstraints" or action == "RLCritic":
             return self.action_map[action]
 
         return self.action_map[action][scope]

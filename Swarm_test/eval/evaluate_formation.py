@@ -15,6 +15,13 @@ import matplotlib.pyplot as plt
 import pickle
 import random
 
+from llm.modules.framework.actions.rl_critic import RLCritic
+import asyncio
+from modules.framework.context import WorkflowContext
+import argparse
+from modules.prompt.user_requirements import get_user_commands
+from modules.utils import root_manager
+
 USE_CUDA = False 
 
 def process_shape(shape_index, env, l_cells_input, grid_center_origins_input, binary_images_input, shape_bound_points_origins_input):
@@ -94,7 +101,7 @@ def run(cfg):
         torch.cuda.manual_seed_all(cfg.seed) 
 
     model_dir = './' / Path('./models') / cfg.env_name 
-    curr_run = '2024-11-12-12-37-39'
+    curr_run = '2024-11-12-12-37-39_sparse'
 
     results_dir = os.path.join(model_dir, curr_run, 'results') 
     if not os.path.exists(results_dir):
@@ -114,6 +121,21 @@ def run(cfg):
     # run_dir = model_dir / curr_run / 'incremental' / 'model_ep4001.pt'
     maddpg = MADDPG.init_from_save(run_dir)
 
+    # llm_reward
+    root_manager.update_root("./workspace/test")
+
+    parser = argparse.ArgumentParser(description="Run simulation with custom parameters.")
+    parser.add_argument("--interaction_mode", type=bool, default=False, help="Whether to run in interaction mode in analyze constraints.")
+    cfgs = parser.parse_args()
+
+    context = WorkflowContext()
+    task = get_user_commands("formation")[0]
+    context.command = task
+    context.args = cfgs
+
+    rl_critic = RLCritic("rl critic")
+
+    ##
     p_store = []
     dp_store = []
     torch_agent_actions=[]
@@ -130,9 +152,9 @@ def run(cfg):
     print('Step Starts...')
     for ep_index in range(0, 1, cfg.n_rollout_threads):
 
-        episode_length = 2050
+        episode_length = 20
         episode_reward = 0
-        obs=env.reset()     
+        obs = env.reset()     
         # maddpg.prep_rollouts(device='cpu') 
 
         maddpg.scale_noise(0, 0)
@@ -148,6 +170,9 @@ def run(cfg):
         # time_points = [0, 250, 550, 800, 1200]
         time_points = [0, 250, 550, 850, 1150, 1450, 1750, 2050]
         # time_points = [0, 250, 550, 850, 1150, 1450, 1750]
+
+        agent_reward_list = []
+        agent_obs_cat = None
         
         ########################### step one episode ###########################
         start_time_1 = time.time()
@@ -177,11 +202,11 @@ def run(cfg):
 
             #####--------------------------#####
             # eval_rew_policy(obs, maddpg, start_stop_num)
-            obs_rs = np.vstack((obs, agent_actions))
-            # obs_rs = obs.copy()
-            torch_obs_rs = torch.Tensor(obs_rs).requires_grad_(False)
-            torch_rewards_rs = maddpg.step_rew(torch_obs_rs, start_stop_num) # shaped reward
-            agent_rewards_rs = np.column_stack([rew.data.numpy() for rew in torch_rewards_rs])
+            # obs_rs = np.vstack((obs, agent_actions))
+            # # obs_rs = obs.copy()
+            # torch_obs_rs = torch.Tensor(obs_rs).requires_grad_(False)
+            # torch_rewards_rs = maddpg.step_rew(torch_obs_rs, start_stop_num) # shaped reward
+            # agent_rewards_rs = np.column_stack([rew.data.numpy() for rew in torch_rewards_rs])
             #####--------------------------#####
 
             # if delete_count == 1:
@@ -190,12 +215,26 @@ def run(cfg):
 
             # obtain  reward and next state
             next_obs, rewards, dones, infos = env.step(agent_actions)
+
+            ##################################################################
+            agent_reward_list.append(rewards[0,0])
+            agent_obs_cat = obs[:,[0]] if agent_obs_cat is None else np.concatenate((agent_obs_cat, obs[:,[0]]), axis=1)
+            ##################################################################
+
             # print(rewards)    
             obs = next_obs    
 
-            episode_reward += np.mean(rewards) 
+            episode_reward += np.mean(rewards)
 
         end_time_1 = time.time()
+
+        # obtain the reward of agent_0 from llm
+        asyncio.run(rl_critic.run(agent_obs_cat))
+        agent_reward_list_from_llm = rl_critic.reward_list
+        for i, (item_a, item_b) in enumerate(zip(agent_reward_list, agent_reward_list_from_llm)):
+            if item_a != item_b:
+                print(f"Elements differ at index {i}: agent_reward_list[{i}] = {item_a}, agent_reward_list_from_llm[{i}] = {item_b}")
+
 
         ########################### process data ###########################
         print("Episodes %i of %i, episode reward: %f, step time: %f" % (ep_index, cfg.n_episodes, episode_reward/episode_length, end_time_1 - start_time_1))
