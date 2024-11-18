@@ -17,7 +17,7 @@ Only Ubuntu 20.04 is recommended.
 ```bash
    pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
 ```
-4. Navigate to the 'customized_gym' folder and run the following command to install the MT-MARL environment:
+4. Navigate to the 'customized_gym' folder and run the following command to install the MARL-LLM environment:
 ```bash
    pip install -e .
 ```
