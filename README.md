@@ -23,6 +23,12 @@ Only Ubuntu 20.04 is recommended.
 ```
 5. If you encounter any other missing packages during the process, feel free to install them manually using ``pip install xxx``
 
+6. The author is using VSCode, so it is recommended to add the following two paths to the bashrc file:
+```bash
+export PYTHONPATH="$PYTHONPATH:/home/your_project_path/Swarm_test/"
+export PYTHONPATH="$PYTHONPATH:/home/your_project_path/Swarm_test/llm/"
+```
+
 ## Example
 ### training
 To be completed
