@@ -27,13 +27,26 @@ Only Ubuntu 20.04 is recommended.
 ```bash
 export PYTHONPATH="$PYTHONPATH:/home/your_project_path/marl_llm/"
 ```
-
+7. Compile C++ shared library:
+```bash
+cd your_path/cus_gym/gym/envs/customized_envs/envs_cplus
+chmod +x build.sh
+./build.sh
+```
 ## Example
 ### training
-To be completed
+1. Set the variable ``image_folder`` in ``cfg/formation_cfg.py``, for example, to ``'/home/your_path_to_fig/'``
+2. Begin training:
+```bash
+cd your_path/marl_llm/train
+python train_formation.py
+```
 
 ### evaluation
-To be completed
+Copy the name of the experimental directory you ran and replace ‵`curr_run = '2025-01-19-15-58-03'`` in ``eval_formation.py``, then:
+```bash
+python eval_formation.py
+```
 
 ## Troubleshooting
 Please open an [Issue](https://github.com/Guobin-Zhu/MARL-LLM/issues) if you have some trouble and advice.
