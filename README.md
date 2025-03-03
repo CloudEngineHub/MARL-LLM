@@ -9,7 +9,7 @@ Only Ubuntu 20.04 is recommended.
 ```bash
    conda create -n xxx(your env name) python=3.10
 ```
-2. Navigate to the 'Swarm_test' folder and run the following command to install dependencies:
+2. Navigate to the 'marl_llm' folder and run the following command to install dependencies:
 ```bash
    pip install -r requirements.txt
 ```
@@ -17,7 +17,7 @@ Only Ubuntu 20.04 is recommended.
 ```bash
    pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
 ```
-4. Navigate to the 'customized_gym' folder and run the following command to install the MARL-LLM environment:
+4. Navigate to the 'cus_gym' folder and run the following command to install the MARL-LLM environment:
 ```bash
    pip install -e .
 ```
@@ -25,8 +25,7 @@ Only Ubuntu 20.04 is recommended.
 
 6. The author is using VSCode, so it is recommended to add the following two paths to the bashrc file:
 ```bash
-export PYTHONPATH="$PYTHONPATH:/home/your_project_path/Swarm_test/"
-export PYTHONPATH="$PYTHONPATH:/home/your_project_path/Swarm_test/llm/"
+export PYTHONPATH="$PYTHONPATH:/home/your_project_path/marl_llm/"
 ```
 
 ## Example
@@ -37,6 +36,6 @@ To be completed
 To be completed
 
 ## Troubleshooting
-Please open an [Issue](https://github.com/Guobin-Zhu/MT-MARL-SG/issues) if you have some trouble and advice.
+Please open an [Issue](https://github.com/Guobin-Zhu/MARL-LLM/issues) if you have some trouble and advice.
 
 The document is being continuously updated.
