@@ -4,8 +4,6 @@
 [![Ubuntu 20.04](https://img.shields.io/badge/ubuntu-20.04-orange.svg)](https://releases.ubuntu.com/20.04/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation**. LAMARL consists of two main components: an LLM-based automatic reward function generation module and a MARL module.
-
 ## 📋 Table of Contents
 - [Overview](#overview)
 - [Features](#features)
@@ -21,16 +19,10 @@ This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent 
 
 ## 🔍 Overview
 
-LAMARL (LLM-Aided Multi-Agent Reinforcement Learning) is a novel framework that leverages Large Language Models to automatically generate reward functions for multi-agent reinforcement learning tasks. This approach significantly reduces the manual effort required in reward engineering while improving cooperative policy generation.
-
-### Key Components:
-- **LLM-based Reward Generation**: Automatically generates reward functions using natural language descriptions
-- **MARL Module**: Implements state-of-the-art multi-agent reinforcement learning algorithms
-- **Cooperative Policy Learning**: Optimizes for collaborative behaviors among multiple agents
+This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation**. LAMARL consists of two main components: an LLM-aided automatic function generation module and a MARL module.
 
 ## ✨ Features
-
-- 🤖 Automatic reward function generation using LLMs
+- 🤖 Automatic function generation using LLMs
 - 🎯 Multi-agent reinforcement learning with cooperative policies
 - 🚀 Accelerated environment sampling with C++ optimization
 - 📊 Comprehensive evaluation and visualization tools
@@ -40,7 +32,7 @@ LAMARL (LLM-Aided Multi-Agent Reinforcement Learning) is a novel framework that 
 
 - **Operating System**: Ubuntu 20.04 (recommended)
 - **Python**: 3.10
-- **GPU**: CUDA-compatible GPU (recommended for training)
+- **GPU**: CUDA-compatible GPU
 
 ## 🛠️ Installation
 
@@ -85,7 +77,7 @@ chmod +x build.sh
 ./build.sh
 ```
 
-### 7. Configure LLM API (Optional)
+### 7. Configure LLM API
 If you want to use LLM for reward function generation, configure your API credentials and run:
 ```bash
 python ./marl_llm/llm/modules/framework/actions/rl_generate_functions.py
@@ -124,9 +116,9 @@ python ./marl_llm/llm/modules/framework/actions/rl_generate_functions.py
 MARL-LLM/
 ├── marl_llm/                 # Main MARL-LLM implementation
 │   ├── cfg/                  # Configuration files
-│   ├── train/                # Training scripts
+│   ├── eval/                 # Evaluation scripts
 │   ├── llm/                  # LLM modules
-│   └── ...
+│   └── train/                # Training scripts
 ├── cus_gym/                  # Custom gym environment
 │   ├── gym/                  # Gym environment implementation
 │   └── ...
@@ -148,11 +140,7 @@ If you encounter any issues, please:
 1. Check the [Issues](https://github.com/Guobin-Zhu/MARL-LLM/issues) page for existing solutions
 2. Open a new issue with detailed error messages and system information
 
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-## 📝 Citation
+<!-- ## 📝 Citation
 
 If you use this code in your research, please cite our paper:
 
@@ -163,16 +151,11 @@ If you use this code in your research, please cite our paper:
   journal={Your Journal/Conference},
   year={2024}
 }
-```
+``` -->
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Thanks to all contributors and researchers in the MARL and LLM communities
-- Special thanks to the open-source libraries that made this work possible
 
 ---
 
