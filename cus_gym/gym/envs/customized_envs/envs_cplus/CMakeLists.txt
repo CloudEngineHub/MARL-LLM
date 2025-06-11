@@ -11,9 +11,9 @@ ENDIF()
 
 # set(CMAKE_BUILD_TYPE Debug)
 
-file(GLOB formation_sources src/FormationEnv.cpp)
+file(GLOB assembly_sources src/AssemblyEnv.cpp)
 file(GLOB test_sources src/test.cpp)
-set(LIB_SRC_FILES ${formation_sources})
+set(LIB_SRC_FILES ${assembly_sources})
 set(LIB_SRC_TEST_FILES ${test_sources})
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -std=c++11 -O3")
@@ -24,7 +24,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -pthread -DDEBUG")
 include_directories(src)
 
 # runtime library
-add_library(FormationEnv SHARED ${LIB_SRC_FILES}) # build shared library
+add_library(AssemblyEnv SHARED ${LIB_SRC_FILES}) # build shared library
 add_executable(testlib ${LIB_SRC_TEST_FILES}) # build executable file
 
 

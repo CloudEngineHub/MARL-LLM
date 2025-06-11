@@ -1,18 +1,17 @@
-from torch import Tensor, nn
+from torch import Tensor
 import torch
-from torch.autograd import Variable
-from torch.optim import Adam
-from .networks import MLPNetwork, MLPNetworkRew       
-from .misc import hard_update, gumbel_softmax, onehot_from_logits
-from .noise import OUNoise, GaussianNoise
 import numpy as np
+from torch.optim import Adam
+from .networks import MLPNetwork       
+from .misc import hard_update, gumbel_softmax, onehot_from_logits
+from .noise import GaussianNoise
 
 class DDPGAgent(object):
     """
     General class for DDPG agents (policy, critic, target policy, target
     critic, exploration noise)
     """
-    def __init__(self, dim_input_policy, dim_output_policy, dim_input_critic, topo_nei_max, is_con_self, is_con_remark_leader,
+    def __init__(self, dim_input_policy, dim_output_policy, dim_input_critic,
                  lr_actor, lr_critic, hidden_dim=64, discrete_action=False, device='cpu', epsilon=0.1, noise=0.1):
         """
         Initialize the DDPGAgent object with given parameters.
@@ -30,35 +29,14 @@ class DDPGAgent(object):
                                         constrain_out=True,
                                         discrete_action=discrete_action)
         
-        # self.policy = MultiHeadMLPNetwork(input_dim_1=dim_input_policy-160, input_dim_2=160, out_dim=dim_output_policy, 
-        #                          hidden_dim_1=hidden_dim, hidden_dim_2=128, 
-        #                          constrain_out=True,
-        #                          discrete_action=discrete_action)
-        # self.target_policy = MultiHeadMLPNetwork(input_dim_1=dim_input_policy-160, input_dim_2=160, out_dim=dim_output_policy, 
-        #                          hidden_dim_1=hidden_dim, hidden_dim_2=128, 
-        #                          constrain_out=True,
-        #                          discrete_action=discrete_action)
-        
-        # self.policy = SymmetricNetwork(dim_input_policy, dim_output_policy,
-        #                          hidden_dim=hidden_dim, 
-        #                          constrain_out=True,
-        #                          discrete_action=discrete_action)
-        # self.target_policy = SymmetricNetwork(dim_input_policy, dim_output_policy,
-        #                                 hidden_dim=hidden_dim,
-        #                                 constrain_out=True,
-        #                                 discrete_action=discrete_action)
-        
         self.critic = MLPNetwork(dim_input_critic, 1,
                                  hidden_dim=hidden_dim,
                                  constrain_out=False)
         self.target_critic = MLPNetwork(dim_input_critic, 1,
                                         hidden_dim=hidden_dim,
                                         constrain_out=False)
-        
-        
-        # print("target_policy_parameter", list(self.target_policy.parameters()), "policy_parameter", list(self.policy.parameters()))
+    
         hard_update(self.target_policy, self.policy)
-        # print("target_policy_parameter_after_update", list(self.target_policy.parameters()), "policy_parameter_after_update", list(self.policy.parameters()))
         hard_update(self.target_critic, self.critic)
         self.policy_optimizer = Adam(self.policy.parameters(), lr_actor)
         self.critic_optimizer = Adam(self.critic.parameters(), lr_critic)

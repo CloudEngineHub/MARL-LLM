@@ -1,2 +1,2 @@
-from gym.envs.customized_envs.formation import FormationSwarmEnv
+from gym.envs.customized_envs.assembly import AssemblySwarmEnv
 

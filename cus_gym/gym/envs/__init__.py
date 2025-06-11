@@ -12,8 +12,8 @@ register(
 )
 
 register(
-    id='FormationSwarm-v0',
-    entry_point='gym.envs.customized_envs:FormationSwarmEnv', 
+    id='AssemblySwarm-v0',
+    entry_point='gym.envs.customized_envs:AssemblySwarmEnv', 
     max_episode_steps=100,
     reward_threshold=1000.0,  
 )
