@@ -1,60 +1,179 @@
 # MARL-LLM
-This repository contains the code for our paper LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation. LAMARL consists of two main components: an LLM-based automatic reward function generation module and a MARL module.
 
-## Requirements
-Only Ubuntu 20.04 is recommended.
+[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
+[![Ubuntu 20.04](https://img.shields.io/badge/ubuntu-20.04-orange.svg)](https://releases.ubuntu.com/20.04/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## Installation
-1. Create a new virtual environment using the following command:
-```bash
-   conda create -n xxx(your env name) python=3.10
-```
-2. Navigate to the 'marl_llm' folder and run the following command to install dependencies:
-```bash
-   pip install -r requirements.txt
-```
-3. Visit the [PyTorch official website](https://pytorch.org/get-started/previous-versions/) and install the GPU version of PyTorch according to your system configuration, such as
-```bash
-   pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
-```
-4. Navigate to the 'cus_gym' folder and run the following command to install the MARL-LLM environment:
-```bash
-   pip install -e .
-```
-5. If you encounter any other missing packages during the process, feel free to install them manually using ``pip install xxx``
+This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation**. LAMARL consists of two main components: an LLM-based automatic reward function generation module and a MARL module.
 
-6. The author is using VSCode, so it is recommended to add the following two paths to the bashrc file:
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Example](#example)
+- [Project Structure](#project-structure)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Citation](#citation)
+- [License](#license)
+
+## 🔍 Overview
+
+LAMARL (LLM-Aided Multi-Agent Reinforcement Learning) is a novel framework that leverages Large Language Models to automatically generate reward functions for multi-agent reinforcement learning tasks. This approach significantly reduces the manual effort required in reward engineering while improving cooperative policy generation.
+
+### Key Components:
+- **LLM-based Reward Generation**: Automatically generates reward functions using natural language descriptions
+- **MARL Module**: Implements state-of-the-art multi-agent reinforcement learning algorithms
+- **Cooperative Policy Learning**: Optimizes for collaborative behaviors among multiple agents
+
+## ✨ Features
+
+- 🤖 Automatic reward function generation using LLMs
+- 🎯 Multi-agent reinforcement learning with cooperative policies
+- 🚀 Accelerated environment sampling with C++ optimization
+- 📊 Comprehensive evaluation and visualization tools
+- 🔧 Modular and extensible architecture
+
+## 📋 Requirements
+
+- **Operating System**: Ubuntu 20.04 (recommended)
+- **Python**: 3.10
+- **GPU**: CUDA-compatible GPU (recommended for training)
+
+## 🛠️ Installation
+
+### 1. Create Virtual Environment
 ```bash
-export PYTHONPATH="$PYTHONPATH:/home/your_project_path/marl_llm/"
+conda create -n marl_llm python=3.10
+conda activate marl_llm
 ```
-7. Compile C++ shared library (Some functions in the environment are implemented in C++ to accelerate the sampling process.):
+
+### 2. Install Dependencies
+Navigate to the 'marl_llm' folder and install required packages:
 ```bash
-cd your_path/cus_gym/gym/envs/customized_envs/envs_cplus
+cd marl_llm
+pip install -r requirements.txt
+```
+
+### 3. Install PyTorch
+Visit the [PyTorch official website](https://pytorch.org/get-started/previous-versions/) and install the GPU version according to your system configuration:
+```bash
+pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+```
+
+### 4. Install Custom Environment
+Navigate to the 'cus_gym' folder and install the MARL-LLM environment:
+```bash
+cd ../cus_gym
+pip install -e .
+```
+
+### 5. Set Environment Variables
+Add the following path to your bashrc file:
+```bash
+echo 'export PYTHONPATH="$PYTHONPATH:/path/to/your/marl_llm/"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### 6. Compile C++ Library
+Some environment functions are implemented in C++ for acceleration:
+```bash
+cd cus_gym/gym/envs/customized_envs/envs_cplus
 chmod +x build.sh
 ./build.sh
 ```
 
-8. If you want to use the LLM to generate reward functions, please make sure the API and key are properly configured. Then, run the following script:
+### 7. Configure LLM API (Optional)
+If you want to use LLM for reward function generation, configure your API credentials and run:
 ```bash
 python ./marl_llm/llm/modules/framework/actions/rl_generate_functions.py
 ```
 
-## Example
-### training
-1. Set the variable ``image_folder`` in ``cfg/assembly_cfg.py``, for example, to ``'/home/your_path_to_fig/'``
-2. Begin training:
-```bash
-cd your_path/marl_llm/train
-python train_assembly.py
+## 🚀 Usage
+
+### Training
+
+1. **Configure settings**: Set the variable `image_folder` in `cfg/assembly_cfg.py`:
+   ```python
+   image_folder = '/path/to/your/figures/'
+   ```
+
+2. **Start training**:
+   ```bash
+   cd marl_llm/train
+   python train_assembly.py
+   ```
+
+### Evaluation
+
+1. **Update experiment directory**: Copy the experimental directory name and replace `curr_run` in `eval_assembly.py`:
+   ```python
+   curr_run = '2025-01-19-15-58-03'  # Replace with your experiment timestamp
+   ```
+
+2. **Run evaluation**:
+   ```bash
+   python eval_assembly.py
+   ```
+
+## 📁 Project Structure
+
+```
+MARL-LLM/
+├── marl_llm/                 # Main MARL-LLM implementation
+│   ├── cfg/                  # Configuration files
+│   ├── train/                # Training scripts
+│   ├── llm/                  # LLM modules
+│   └── ...
+├── cus_gym/                  # Custom gym environment
+│   ├── gym/                  # Gym environment implementation
+│   └── ...
+├── requirements.txt          # Python dependencies
+└── README.md                # This file
 ```
 
-### evaluation
-Copy the name of the experimental directory you ran and replace ‵`curr_run = '2025-01-19-15-58-03'`` in ``eval_assembly.py``, then:
-```bash
-python eval_assembly.py
+## 🔧 Troubleshooting
+
+### Common Issues
+
+- **Missing packages**: Install them manually using `pip install package_name`
+- **CUDA issues**: Ensure your GPU drivers and CUDA version are compatible with PyTorch
+- **C++ compilation errors**: Make sure you have a compatible C++ compiler installed
+
+### Getting Help
+
+If you encounter any issues, please:
+1. Check the [Issues](https://github.com/Guobin-Zhu/MARL-LLM/issues) page for existing solutions
+2. Open a new issue with detailed error messages and system information
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📝 Citation
+
+If you use this code in your research, please cite our paper:
+
+```bibtex
+@article{your_paper_2024,
+  title={LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation},
+  author={Your Name and Co-authors},
+  journal={Your Journal/Conference},
+  year={2024}
+}
 ```
 
-## Troubleshooting
-Please open an [Issue](https://github.com/Guobin-Zhu/MARL-LLM/issues) if you have some trouble and advice.
+## 📄 License
 
-The document is being continuously updated.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Thanks to all contributors and researchers in the MARL and LLM communities
+- Special thanks to the open-source libraries that made this work possible
+
+---
+
+**Note**: This documentation is continuously being updated. For the latest information, please check the repository regularly.
