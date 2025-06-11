@@ -4,19 +4,6 @@
 [![Ubuntu 20.04](https://img.shields.io/badge/ubuntu-20.04-orange.svg)](https://releases.ubuntu.com/20.04/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Example](#example)
-- [Project Structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [Citation](#citation)
-- [License](#license)
-
 ## 🔍 Overview
 
 This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation**. LAMARL consists of two main components: an LLM-aided automatic function generation module and a MARL module.
