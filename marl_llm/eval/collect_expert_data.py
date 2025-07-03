@@ -110,6 +110,7 @@ if __name__ == '__main__':
     args.agent_strategy = 'rule'      # Use rule-based expert strategy
     args.n_episodes = 500             # Total episodes to collect (increased from 300)
     args.buffer_length = int(1e5)     # Buffer capacity (total capacity = 50 episodes × 30k steps = 1.5M transitions)
+    args.is_collected = True          # Enable expert data collection
     
     # Start expert data collection
     run(args)

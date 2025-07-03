@@ -93,6 +93,7 @@ class AssemblySwarmEnv(gym.Env):
         self.n_a = args.n_a
         self.render_traj = args.render_traj
         self.traj_len = args.traj_len
+        self.is_collected = args.is_collected
         self.video = args.video
 
         self.is_boundary = args.is_boundary
@@ -659,8 +660,10 @@ class AssemblySwarmEnv(gym.Env):
             done = self._get_done()
             info = self._get_info()
 
-        return obs, rew, done, info, a_prior if self.training_method == 'llm_rl' else None
-        # return obs, rew, done, info, u
+        if self.is_collected:
+            return obs, rew, done, info, u
+        else:
+            return obs, rew, done, info, a_prior if self.training_method == 'llm_rl' else None
 
     def render(self, mode="human"): 
 

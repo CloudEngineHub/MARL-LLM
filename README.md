@@ -20,6 +20,24 @@ This repository contains the code for our paper **LAMARL: LLM-Aided Multi-Agent 
 - **Operating System**: Ubuntu 20.04 (recommended)
 - **Python**: 3.10
 - **GPU**: CUDA-compatible GPU
+- 
+## 📁 Project Structure
+
+```
+MARL-LLM/
+├── marl_llm/                 # Main MARL-LLM implementation
+│   ├── cfg/                  # Configuration files
+│   ├── eval/                 # Evaluation scripts
+│   ├── llm/                  # LLM modules
+│   └── train/                # Training scripts
+├── cus_gym/                  # Custom gym environment
+│   ├── gym/                  # Gym environment implementation
+│   └── ...
+├── requirements.txt          # Python dependencies
+└── README.md                # This file
+```
+
+## 🔧 Troubleshooting
 
 ## 🛠️ Installation
 
@@ -96,24 +114,6 @@ python ./marl_llm/llm/modules/framework/actions/rl_generate_functions.py
    ```bash
    python eval_assembly.py
    ```
-
-## 📁 Project Structure
-
-```
-MARL-LLM/
-├── marl_llm/                 # Main MARL-LLM implementation
-│   ├── cfg/                  # Configuration files
-│   ├── eval/                 # Evaluation scripts
-│   ├── llm/                  # LLM modules
-│   └── train/                # Training scripts
-├── cus_gym/                  # Custom gym environment
-│   ├── gym/                  # Gym environment implementation
-│   └── ...
-├── requirements.txt          # Python dependencies
-└── README.md                # This file
-```
-
-## 🔧 Troubleshooting
 
 ### Common Issues
 

@@ -163,6 +163,7 @@ parser.add_argument("--traj_len", type=int, default=15, help="Length of trajecto
 # Agent behavior configuration
 parser.add_argument("--agent_strategy", type=str, default='input', help="Agent control strategy: input/random/llm/rule")
 parser.add_argument("--training_method", default="llm_rl", type=str, choices=['llm_rl', 'pid', 'manual_rl', 'irl'],help="Training methodology")
+parser.add_argument("--is_collected", type=bool, default=False, help="Collect expert data for IRL or imitation learning")
 parser.add_argument("--results_file", type=type(results_file), default=results_file, help="Path to processed image results file")
 parser.add_argument("--video", type=bool, default=False, help="Enable video recording of simulations")
 ## ==================== End of Environment Configuration ====================
