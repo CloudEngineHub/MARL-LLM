@@ -127,18 +127,22 @@ If you encounter any issues, please:
 1. Check the [Issues](https://github.com/Guobin-Zhu/MARL-LLM/issues) page for existing solutions
 2. Open a new issue with detailed error messages and system information
 
-<!-- ## 📝 Citation
+## 📝 Citation
 
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@article{your_paper_2024,
-  title={LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation},
-  author={Your Name and Co-authors},
-  journal={Your Journal/Conference},
-  year={2024}
+@article{zhu2025lamarl,
+  author={Zhu, Guobin and Zhou, Rui and Ji, Wenkang and Zhao, Shiyu},
+  journal={IEEE Robotics and Automation Letters}, 
+  title={LAMARL: LLM-Aided Multi-Agent Reinforcement Learning for Cooperative Policy Generation}, 
+  volume={10},
+  number={7},
+  pages={7476-7483},
+  year={2025},
 }
-``` -->
+
+```
 
 ## 📄 License
 
