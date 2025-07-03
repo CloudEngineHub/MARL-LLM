@@ -142,7 +142,7 @@ class ReplayBufferAgent(object):
                           dones, prior_actions, log_probabilities)
         """
         # Define sampling range 
-        begin_index_range = 6e5 
+        begin_index_range = 3e5 
         begin_index = np.random.randint(0, begin_index_range)
         
         # Randomly sample indices from valid range
