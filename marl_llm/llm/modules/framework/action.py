@@ -20,7 +20,6 @@ from modules.file import logger
 from modules.framework.code import FunctionTree
 from modules.framework.code_error import CodeError
 from modules.framework.context import WorkflowContext
-from modules.framework.constraint import ConstraintPool
 from modules.framework.node_renderer import *
 from modules.utils import setup_logger, LoggerLevel, root_manager
 from modules.llm.gpt import GPT
@@ -143,7 +142,6 @@ class AsyncNode(ActionNode):
         self._start_state = start_state
         self._end_state = end_state
         self.skill_tree = skill_tree
-        self.constraint_pool = ConstraintPool()
 
     def _build_prompt(self):
         pass

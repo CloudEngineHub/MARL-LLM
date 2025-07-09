@@ -11,7 +11,7 @@ tort, or otherwise, arising from, out of, or in connection with the
 software or the use or other dealings in the software.
 """
 
-from modules.framework.constraint import ConstraintPool
+
 from modules.file import logger, File
 
 from .function_layer import FunctionLayer
@@ -19,7 +19,6 @@ from .function_node import FunctionNode, State
 
 
 class FunctionTree:
-    # TODO：梳理functionTree的逻辑，对其进行简化，减少不必要的逻辑 (@Jiwenkang 10-4)
     def __init__(self, name: str, init_import_list: set[str] = None):
         self._name = name
         self._function_nodes: dict[str, FunctionNode] = {}
@@ -240,7 +239,6 @@ class FunctionTree:
         return list(seen)
 
     def save_functions_to_file(self, functions: list[FunctionNode] = None, save=True):
-        # 根据函数所在的层级进行排序，如果未找到层级信息，默认放在最后
         if not functions:
             sorted_functions = sorted(
                 self._function_nodes.values(),

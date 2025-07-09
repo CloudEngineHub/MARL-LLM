@@ -15,7 +15,6 @@ import argparse
 import pickle
 from modules.file import File
 from modules.framework.code import FunctionTree
-from modules.framework.constraint import ConstraintPool
 
 from .context import Context
 
@@ -35,7 +34,6 @@ class WorkflowContext(Context):
         self.feedbacks = []
         self.run_code = File(name="run.py")
         self.args = argparse.Namespace()
-        self._constraint_pool = ConstraintPool()
         self._generated_codes = []
 
         self.scoop = "global"
@@ -64,14 +62,3 @@ class WorkflowContext(Context):
     def command(self, value):
         self._instance.user_command.message = value
 
-    @property
-    def global_skill_tree(self) -> FunctionTree:
-        return self._instance._global_skill_tree
-
-    @property
-    def local_skill_tree(self) -> FunctionTree:
-        return self._instance._local_skill_tree
-
-    @property
-    def constraint_pool(self) -> ConstraintPool:
-        return self._instance._constraint_pool
