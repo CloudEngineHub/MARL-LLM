@@ -7,7 +7,7 @@ from .misc import soft_update, hard_update, average_gradients, init_processes, o
 from .networks import MLPNetwork, MLPUnit, ResidualBlock, Discriminator
 from .noise import OUNoise, GaussianNoise
 
-all = [
+__all__ = [
     'DDPGAgent',
     'ReplayBufferAgent',
     'ReplayBufferEpisode',

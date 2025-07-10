@@ -1,6 +1,6 @@
 import torch
 from torch.optim import Adam
-from algorithm.utils.networks import Discriminator
+from algorithm.utils import Discriminator
 import torch.nn.functional as F
 import numpy as np
 
