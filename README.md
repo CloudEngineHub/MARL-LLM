@@ -129,7 +129,7 @@ If you encounter any issues, please:
 
 ## 📝 Citation
 
-If you use this code in your research, please cite our paper:
+If you find this code useful in your research, please consider citing our paper:
 
 ```bibtex
 @article{zhu2025lamarl,
